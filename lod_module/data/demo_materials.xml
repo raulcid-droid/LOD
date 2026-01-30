@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Hormigón -->
+        <record id="material_hormigon_h30" model="construction.material">
+            <field name="name">Hormigón H30</field>
+            <field name="code">HOR-H30</field>
+            <field name="category">hormigon</field>
+            <field name="unit">m3</field>
+            <field name="quantity">25.0</field>
+            <field name="minimum_stock">10.0</field>
+            <field name="location">Bodega Principal - Zona A</field>
+            <field name="supplier">Hormigones del Pacífico</field>
+        </record>
+        
+        <!-- Fierro -->
+        <record id="material_fierro_a630" model="construction.material">
+            <field name="name">Fierro A630-420H Ø12mm</field>
+            <field name="code">FIE-A630-12</field>
+            <field name="category">fierro</field>
+            <field name="unit">kg</field>
+            <field name="quantity">1500.0</field>
+            <field name="minimum_stock">500.0</field>
+            <field name="location">Bodega Principal - Zona B</field>
+            <field name="supplier">Cintac</field>
+        </record>
+        
+        <record id="material_fierro_a630_8" model="construction.material">
+            <field name="name">Fierro A630-420H Ø8mm</field>
+            <field name="code">FIE-A630-8</field>
+            <field name="category">fierro</field>
+            <field name="unit">kg</field>
+            <field name="quantity">800.0</field>
+            <field name="minimum_stock">300.0</field>
+            <field name="location">Bodega Principal - Zona B</field>
+            <field name="supplier">Cintac</field>
+        </record>
+        
+        <!-- Moldaje -->
+        <record id="material_moldaje" model="construction.material">
+            <field name="name">Moldaje Fenólico 15mm</field>
+            <field name="code">MOL-FEN-15</field>
+            <field name="category">moldaje</field>
+            <field name="unit">m2</field>
+            <field name="quantity">150.0</field>
+            <field name="minimum_stock">80.0</field>
+            <field name="location">Bodega Secundaria</field>
+            <field name="supplier">Maderas del Sur</field>
+        </record>
+        
+        <!-- Cemento -->
+        <record id="material_cemento" model="construction.material">
+            <field name="name">Cemento Melón Especial</field>
+            <field name="code">CEM-MEL-ESP</field>
+            <field name="category">cemento</field>
+            <field name="unit">saco</field>
+            <field name="quantity">80.0</field>
+            <field name="minimum_stock">50.0</field>
+            <field name="location">Bodega Principal - Zona C</field>
+            <field name="supplier">Cemento Melón</field>
+        </record>
+        
+        <!-- Arena -->
+        <record id="material_arena" model="construction.material">
+            <field name="name">Arena Gruesa</field>
+            <field name="code">ARE-GRU</field>
+            <field name="category">arena</field>
+            <field name="unit">m3</field>
+            <field name="quantity">15.0</field>
+            <field name="minimum_stock">8.0</field>
+            <field name="location">Patio Exterior</field>
+            <field name="supplier">Áridos del Maipo</field>
+        </record>
+        
+        <!-- Herramientas -->
+        <record id="material_alambre" model="construction.material">
+            <field name="name">Alambre Recocido N°18</field>
+            <field name="code">ALA-REC-18</field>
+            <field name="category">herramientas</field>
+            <field name="unit">kg</field>
+            <field name="quantity">25.0</field>
+            <field name="minimum_stock">10.0</field>
+            <field name="location">Bodega Herramientas</field>
+        </record>
+        
+        <record id="material_separadores" model="construction.material">
+            <field name="name">Separadores Plásticos</field>
+            <field name="code">SEP-PLA</field>
+            <field name="category">herramientas</field>
+            <field name="unit">unidad</field>
+            <field name="quantity">500.0</field>
+            <field name="minimum_stock">200.0</field>
+            <field name="location">Bodega Herramientas</field>
+        </record>
+        
+    </data>
+</odoo>

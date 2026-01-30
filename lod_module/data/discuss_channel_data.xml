@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="channel_construction_assistant" model="discuss.channel">
+            <field name="name">Asistente de Construcción</field>
+            <field name="channel_type">channel</field>
+            <field name="description">Agente IA para consultas sobre materiales de construcción</field>
+        </record>
+    </data>
+</odoo>
