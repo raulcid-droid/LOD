@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="res_config_settings_view_form_inherit" model="ir.ui.view">
         <field name="name">res.config.settings.construction.view.form</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@id='settings']" position="inside">
-                
+            <!-- Inserta dentro del sheet principal -->
+            <xpath expr="//sheet" position="inside">
+
                 <div class="app_settings_block" 
                      data-string="Construction" 
                      string="Construction Materials" 
                      data-key="construction_materials">
-                    
+
                     <h2>Construction Materials AI</h2>
-                    
+
                     <div class="row mt16 o_settings_container">
                         <div class="col-12 col-lg-6 o_setting_box">
                             <div class="o_setting_left_pane"/>
@@ -25,7 +25,7 @@
                                            placeholder="Enter your Gemini API Key"/>
                                 </div>
                                 <div class="text-muted">
-                                    Get your free API key at: 
+                                    Get your free API key at:
                                     <a href="https://aistudio.google.com/api-keys" target="_blank">
                                         https://aistudio.google.com/api-keys
                                     </a>
