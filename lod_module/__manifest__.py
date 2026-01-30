@@ -1,21 +1,30 @@
+# -*- coding: utf-8 -*-
 {
-    'name': "Libro de Obras Digital (LOD)", 
-    'summary': "Desarrollo práctico para soluciones constructivas",
+    'name': 'Construction Materials AI',
+    'version': '19.0.1.0.0',
+    'category': 'Construction',
+    'summary': 'Gestión de bodega de materiales con asistente IA',
     'description': """
-        Práctica SellSide V01 - Gestión de costos y peajes.
+        Módulo para gestión de materiales de construcción con:
+        - Control de inventario de materiales
+        - Asistente IA para consultas
+        - Alertas de stock bajo
     """,
-    'author': "Raul Cid",
-    'website': "https://cidev.dev",
-    'category': 'Project',
-    'version': '0.1',
-    'depends': ['base'],
+    'author': 'Raul Cid',
+    'website': 'https://cidev.dev',
+    'depends': ['base', 'mail', 'stock', 'product'],
     'data': [
-        # 'security/ir.model.access.csv', # ¡No olvides activarlo cuando definas modelos!
-        'views/views.xml',
+        'security/ir.model.access.csv',
+        'data/discuss_channel_data.xml',
+        'data/demo_materials.xml',
+        'views/construction_material_views.xml',
+        'views/res_config_settings_views.xml',
         'views/templates.xml',
     ],
     'demo': [
         'demo/demo.xml',
     ],
-    'application': True, # Crucial para que aparezca en el menú de Apps
+    'installable': True,
+    'application': True,
+    'license': 'LGPL-3',
 }
