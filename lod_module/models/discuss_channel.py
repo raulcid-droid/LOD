@@ -11,66 +11,76 @@ except ImportError:
     genai = None
     _logger.warning("google-generativeai no instalada")
 
-
 class DiscussChannel(models.Model):
     _inherit = 'discuss.channel'
 
     def _message_post_after_hook(self, message, msg_vals):
         res = super()._message_post_after_hook(message, msg_vals)
         
+        # 1. ESCUDO ANTI-BUCLE: No responder a sistemas, bots o notificaciones
+        if not message.author_id or \
+           message.author_id.id == self.env.ref('base.partner_root').id or \
+           message.message_type == 'notification':
+            return res
+
+        # Solo actuar en el canal del Asistente
         if self.name != 'Asistente de Construcción':
             return res
         
-        if message.author_id.id == self.env.ref('base.partner_root').id:
-            return res
-        
         body = message.body or ''
+        
+        # 2. ESCUDO ANTI-BUCLE: Si el mensaje contiene nuestros propios emojis de respuesta, ignorar
+        if "📦" in body or "✅" in body or "❌" in body:
+            return res
+
         clean_text = re.sub('<[^>]*>', '', body).strip()
         
         if clean_text and len(clean_text) > 0:
             try:
+                # Obtener API Key de los ajustes
                 api_key = self.env['ir.config_parameter'].sudo().get_param('construction_materials.api_key')
                 
                 if not api_key:
-                    self.message_post(body="⚠️ **API Key no configurada**\n\nVe a: Settings → Construction Materials AI")
+                    _logger.warning("API Key de Gemini no configurada en Ajustes")
                     return res
                 
                 if not genai:
-                    self.message_post(body="⚠️ Librería google-generativeai no instalada")
+                    _logger.error("Librería google-generativeai no disponible")
                     return res
                 
+                # Consultar Inventario de lod_module
                 materials = self.env['construction.material'].search([])
-                
                 inventory_text = "📦 **INVENTARIO ACTUAL:**\n\n"
                 for mat in materials:
+                    # Determinar emoji según el estado definido en tu lod_module
                     emoji = "✅" if mat.state == 'available' else "⚠️" if mat.state == 'low' else "❌"
                     inventory_text += f"{emoji} **{mat.name}**: {mat.quantity} {mat.unit}\n"
                 
+                # Configurar y llamar a Gemini
                 genai.configure(api_key=api_key)
                 model = genai.GenerativeModel('gemini-2.0-flash-exp')
                 
-                prompt = f"""Eres un experto en construcción chileno.
+                prompt = f"""Eres un experto en construcción chileno para el Libro de Obras Digital.
 
 {inventory_text}
 
-CANTIDADES TÍPICAS PARA LOSA 100m²:
-- Hormigón H30: 10-12 m³
-- Fierro A630-420H: 800-1000 kg  
-- Moldaje: 100-120 m²
+DATOS TÉCNICOS DE REFERENCIA:
+- Hormigón H30: 10-12 m³ para 100m²
+- Fierro A630-420H: 800-1000 kg para 100m²
+- Moldaje: 100-120 m² para 100m²
 
-Pregunta: {clean_text}
+Usuario pregunta: {clean_text}
 
-Responde profesionalmente si hay suficiente stock."""
+Responde de forma técnica y breve si el stock actual es suficiente para lo que el usuario consulta."""
 
                 response = model.generate_content(prompt)
                 
                 if response and response.text:
-                    self.message_post(body=response.text)
-                else:
-                    self.message_post(body="❌ No pude generar respuesta")
+                    # Publicar respuesta (el escudo del paso 2 evitará que esto dispare un bucle)
+                    self.message_post(body=response.text, message_type='comment')
                     
             except Exception as e:
-                _logger.error(f"Error IA: {str(e)}")
-                self.message_post(body=f"❌ Error: {str(e)}")
+                # Registramos el error en el log de Odoo.sh pero NO lo enviamos al chat
+                _logger.error(f"FALLO CRÍTICO EN ASISTENTE IA: {str(e)}")
         
         return res
