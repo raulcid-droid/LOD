@@ -8,7 +8,7 @@ _logger = logging.getLogger(__name__)
 API_KEY = "AIzaSyCemTftdDansp1SZSCvOkSYLve7Ff1q_9c"
 
 class Channel(models.Model):
-    _inherit = 'mail.channel'
+    _inherit = 'discuss.channel'
 
     def _get_inventario_resumen(self):
         # Busca productos con stock > 0
