@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="chatbot_assets" name="Chatbot Assets" inherit_id="website.layout">
+        <xpath expr="//head" position="inside">
+            <!-- JavaScript y CSS se cargan automáticamente desde __manifest__.py -->
+        </xpath>
+    </template>
+</odoo>
