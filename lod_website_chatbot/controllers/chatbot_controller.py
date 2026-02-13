@@ -7,9 +7,9 @@ _logger = logging.getLogger(__name__)
 
 class ChatbotWebController(http.Controller):
     
-    @http.route('/api/chatbot/ask', type='json', auth='public', methods=['POST'], csrf=False, cors='*')
-    def chatbot_ask(self, message, **kwargs):
-        """API pública para consultas del chatbot web con acceso a contenido del sitio"""
+    @http.route('/api/chatbot/ask', type='json', auth='public', methods=['POST'], csrf=False, cors='*') # Define la ruta de la API
+    def chatbot_ask(self, message, **kwargs): # Define la función que se ejecutará cuando se acceda a la ruta
+        """API pública para consultas del chatbot web con acceso a contenido del sitio""" # Descripción de la función
         try:
             if not message or len(message.strip()) < 3:
                 return {'success': False, 'error': 'Por favor escribe una pregunta más específica'}
@@ -28,8 +28,14 @@ class ChatbotWebController(http.Controller):
                 _logger.error("Librería google-generativeai no instalada")
                 return {'success': False, 'error': 'Servicio no disponible'}
             
+            # ==============================================================================================
+            # 1. RETRIEVAL (RECUPERACIÓN)
+            # ==============================================================================================
+            # En esta etapa, el sistema busca datos relevantes en "tiempo real" desde la base de datos de Odoo.
+            # Estos datos recuperados formarán el "contexto" que se enviará al modelo.
+            
             # Consultar inventario
-            materials = request.env['construction.material'].sudo().search([])
+            materials = request.env['construction.material'].sudo().search([]) # Busca todos los materiales
             
             if not materials:
                 inventory_text = "📦 No hay materiales en inventario.\n"
@@ -89,7 +95,15 @@ class ChatbotWebController(http.Controller):
             genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-flash-latest')
             
-            prompt = f"""Eres el asistente virtual del sitio web LOD - Libro de Obras Digital.
+            # ==============================================================================================
+            # 2. AUGMENTATION (AUMENTACIÓN)
+            # ==============================================================================================
+            # Aquí "aumentamos" el conocimiento del modelo inyectando los datos recuperados directamente en el prompt.
+            # El modelo (Gemini) no conoce tu inventario ni tus páginas web, pero aquí se lo "enseñamos" 
+            # dinámicamente en cada consulta dentro de las variables {inventory_text} y {website_content}.
+            # f string es una cadena de texto que permite incluir variables dentro de la cadena
+
+            prompt = f"""Eres el asistente virtual del sitio web LOD - Libro de Obras Digital. 
 
 {inventory_text}
 
@@ -104,6 +118,13 @@ Pregunta: {message.strip()}
 
 Responde de forma amigable y breve (máximo 4 líneas)."""
             
+            # ==============================================================================================
+            # 3. GENERATION (GENERACIÓN)
+            # ==============================================================================================
+            # Finalmente, enviamos el prompt enriquecido al LLM. El modelo procesa la pregunta del usuario
+            # JUNTOS con los datos del inventario y contenido web que le acabamos de pasar, y "genera" 
+            # una respuesta en lenguaje natural basada en esa información exacta.
+
             response = model.generate_content(prompt)
             
             if not response or not response.text:

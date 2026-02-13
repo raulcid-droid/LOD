@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 from odoo import models
 import logging
-import re
+import re 
 
-_logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__) # logger para debugging
 
 try:
-    import google.generativeai as genai
+    import google.generativeai as genai # Importamos la librería de Google Gemini
 except ImportError:
     genai = None
     _logger.warning("google-generativeai no instalada")
 
 class DiscussChannel(models.Model):
-    _inherit = 'discuss.channel'
+    _inherit = 'discuss.channel' # heredamos de discuss.channel
 
     def _message_post_after_hook(self, message, msg_vals):
         """
