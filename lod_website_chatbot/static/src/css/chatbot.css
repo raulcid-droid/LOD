@@ -257,3 +257,140 @@
 .lod-chatbot-messages::-webkit-scrollbar-thumb:hover {
     background: #999;
 }
+
+/* ============================
+   Componentes A2UI
+   ============================ */
+
+.lod-component {
+    max-width: 95%;
+    padding: 8px 12px;
+}
+
+/* Tabla de materiales */
+.lod-component-table {
+    overflow-x: auto;
+}
+
+.lod-component-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.lod-component-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.lod-component-table th:first-child {
+    border-radius: 8px 0 0 0;
+}
+
+.lod-component-table th:last-child {
+    border-radius: 0 8px 0 0;
+}
+
+.lod-component-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.lod-component-table tr:last-child td {
+    border-bottom: none;
+}
+
+.lod-component-table tr:hover td {
+    background: #f0f0ff;
+}
+
+/* Badges de estado */
+.lod-state-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.lod-state-available {
+    background: #e6f9ee;
+    color: #1a7a3a;
+}
+
+.lod-state-low {
+    background: #fff5e0;
+    color: #b8860b;
+}
+
+.lod-state-out {
+    background: #fee;
+    color: #c33;
+}
+
+/* Card de contacto */
+.lod-component-card {
+    padding: 4px 0;
+}
+
+.lod-card-name {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.lod-card-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.lod-card-icon {
+    font-size: 16px;
+}
+
+.lod-card-row a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.lod-card-row a:hover {
+    text-decoration: underline;
+}
+
+/* Lista de productos */
+.lod-component-product {
+    padding: 4px 0;
+}
+
+.lod-product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+}
+
+.lod-product-item:last-child {
+    border-bottom: none;
+}
+
+.lod-product-name {
+    color: #333;
+    flex: 1;
+    margin-right: 12px;
+}
+
+.lod-product-price {
+    font-weight: 700;
+    color: #667eea;
+    white-space: nowrap;
+}
