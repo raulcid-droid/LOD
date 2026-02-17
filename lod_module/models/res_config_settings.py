@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import fields, models. # odoo es el framework que usamos
+from odoo import fields, models 
 
 
 class ResConfigSettings(models.TransientModel): # heredamos de res.config.settings
