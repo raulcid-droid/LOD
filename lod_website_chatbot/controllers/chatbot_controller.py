@@ -126,13 +126,16 @@ Responde SIEMPRE en formato JSON válido con esta estructura:
 }}
 
 Reglas para elegir el type:
-- "material_table": cuando pregunten por materiales, inventario, stock, disponibilidad
+- "product_detail": cuando el usuario pregunte por UN material o producto específico (ej: "tienes fierro?", "hay hormigón?", "info de cemento", "tienes enfierradura"). OBLIGATORIO incluir "product_name" con el nombre EXACTO tal como aparece en la lista de materiales/productos de arriba. Ejemplo: si preguntan "tienes enfierradura", debes usar product_name "Fierro A630-420H" (el nombre real del inventario, NO el término del usuario).
+- "material_table": SOLO cuando pregunten por TODO el inventario completo, listado general, o múltiples materiales a la vez (ej: "muéstrame todo el inventario", "qué materiales tienen?", "lista de stock").
 - "contact_card": cuando pregunten por contacto, teléfono, email, dirección
-- "product_list": cuando pregunten por productos, servicios, precios, catálogo
-- "product_detail": cuando pregunten por detalles o información de un producto específico. OBLIGATORIO incluir "product_name" con el nombre del producto mencionado.
+- "product_list": cuando pregunten por productos de la tienda, servicios, precios, catálogo completo
 - "text": para todo lo demás (saludos, dudas técnicas, cálculos, etc.)
 
-IMPORTANTE sobre product_detail: Cuando uses type "product_detail", SIEMPRE debes incluir el campo "product_name" con el nombre del producto que el usuario pregunta. Ejemplo:
+IMPORTANTE sobre product_detail: El campo "product_name" debe contener el nombre EXACTO del producto/material tal como aparece en los datos de arriba, NO el término coloquial del usuario. Ejemplos:
+- Usuario dice "enfierradura" → product_name: "Fierro A630-420H"
+- Usuario dice "hormigón" → product_name: "Hormigón H30"
+- Usuario dice "moldaje" → product_name: "Moldaje Fenólico"
 {{"type": "product_detail", "text": "Aquí tienes los detalles:", "product_name": "Hormigón H30"}}
 
 IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicional."""
@@ -199,10 +202,19 @@ IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicio
             elif component_type == 'product_detail':
                 product_name = ai_response.get('product_name', '')
                 # Buscar primero en product.template (tienda web)
-                domain = [('website_published', '=', True)]
+                product = None
                 if product_name:
-                    domain.append(('name', 'ilike', product_name))
-                product = request.env['product.template'].sudo().search(domain, limit=1)
+                    # Búsqueda exacta
+                    product = request.env['product.template'].sudo().search(
+                        [('website_published', '=', True), ('name', 'ilike', product_name)], limit=1)
+                    # Búsqueda por palabras si no hay match exacto
+                    if not product:
+                        for word in product_name.split():
+                            if len(word) >= 3:
+                                product = request.env['product.template'].sudo().search(
+                                    [('website_published', '=', True), ('name', 'ilike', word)], limit=1)
+                                if product:
+                                    break
                 if product:
                     result['data'] = {
                         'name': product.name,
@@ -213,10 +225,19 @@ IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicio
                     }
                 else:
                     # Fallback: buscar en construction.material (inventario)
-                    mat_domain = []
+                    material = None
                     if product_name:
-                        mat_domain.append(('name', 'ilike', product_name))
-                    material = request.env['construction.material'].sudo().search(mat_domain, limit=1)
+                        # Búsqueda exacta
+                        material = request.env['construction.material'].sudo().search(
+                            [('name', 'ilike', product_name)], limit=1)
+                        # Búsqueda por palabras si no hay match exacto
+                        if not material:
+                            for word in product_name.split():
+                                if len(word) >= 3:
+                                    material = request.env['construction.material'].sudo().search(
+                                        [('name', 'ilike', word)], limit=1)
+                                    if material:
+                                        break
                     if material:
                         category_map = {'hormigon': 'Hormigón', 'fierro': 'Fierro', 'moldaje': 'Moldaje', 'cemento': 'Cemento', 'arena': 'Arena', 'herramientas': 'Herramientas', 'otros': 'Otros'}
                         state_map = {'available': 'Disponible', 'low': 'Stock bajo', 'out': 'Sin stock'}
