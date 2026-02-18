@@ -120,14 +120,16 @@ Pregunta del usuario: {message.strip()}
 INSTRUCCIONES DE RESPUESTA:
 Responde SIEMPRE en formato JSON válido con esta estructura:
 {{
-  "type": "text|material_table|contact_card|product_list",
-  "text": "tu mensaje amigable y breve (máximo 3 líneas)"
+  "type": "text|material_table|contact_card|product_list|product_detail",
+  "text": "tu mensaje amigable y breve (máximo 3 líneas)",
+  "product_name": "nombre exacto del producto (solo para product_detail)"
 }}
 
 Reglas para elegir el type:
 - "material_table": cuando pregunten por materiales, inventario, stock, disponibilidad
 - "contact_card": cuando pregunten por contacto, teléfono, email, dirección
 - "product_list": cuando pregunten por productos, servicios, precios, catálogo
+- "product_detail": cuando pregunten por detalles o información de un producto específico
 - "text": para todo lo demás (saludos, dudas técnicas, cálculos, etc.)
 
 IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicional."""
@@ -188,6 +190,21 @@ IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicio
                     'name': p.name,
                     'price': p.list_price,
                 } for p in products]
+
+            elif component_type == 'product_detail':
+                product_name = ai_response.get('product_name', '')
+                domain = [('website_published', '=', True)]
+                if product_name:
+                    domain.append(('name', 'ilike', product_name))
+                product = request.env['product.template'].sudo().search(domain, limit=1)
+                if product:
+                    result['data'] = {
+                        'name': product.name,
+                        'price': product.list_price,
+                        'description': product.description_sale or '',
+                        'category': product.categ_id.name if product.categ_id else '',
+                        'image_url': '/web/image/product.template/%d/image_256' % product.id,
+                    }
 
             return result
             

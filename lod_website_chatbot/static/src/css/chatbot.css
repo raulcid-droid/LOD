@@ -394,3 +394,40 @@
     color: #667eea;
     white-space: nowrap;
 }
+
+/* Detalle de producto */
+.lod-component-detail {
+    padding: 8px 0;
+}
+
+.lod-detail-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.lod-detail-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.lod-detail-category {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.lod-detail-desc {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.lod-detail-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #667eea;
+}

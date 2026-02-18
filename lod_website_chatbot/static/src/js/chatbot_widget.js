@@ -157,6 +157,9 @@
                     case 'product_list':
                         renderProductList(payload.data);
                         break;
+                    case 'product_detail':
+                        renderProductDetail(payload.data);
+                        break;
                 }
             }
         }
@@ -223,6 +226,34 @@
 
             const html = '<div class="lod-component-product">' + items + '</div>';
             addComponentHTML(html);
+        }
+
+        // renderiza card de detalle de un producto específico
+        function renderProductDetail(data) {
+            if (!data) return;
+
+            let content = '<div class="lod-component-detail">';
+            if (data.image_url) {
+                content += '<img class="lod-detail-image" src="' + escapeHtml(data.image_url)
+                    + '" alt="' + escapeHtml(data.name) + '"'
+                    + ' onerror="this.style.display=\'none\'" />';
+            }
+            if (data.name) {
+                content += '<div class="lod-detail-name">' + escapeHtml(data.name) + '</div>';
+            }
+            if (data.category) {
+                content += '<div class="lod-detail-category">' + escapeHtml(data.category) + '</div>';
+            }
+            if (data.description) {
+                content += '<div class="lod-detail-desc">' + escapeHtml(data.description) + '</div>';
+            }
+            if (data.price > 0) {
+                content += '<div class="lod-detail-price">$'
+                    + Number(data.price).toLocaleString('es-CL') + '</div>';
+            }
+            content += '</div>';
+
+            addComponentHTML(content);
         }
 
         // inserta HTML de componente como mensaje bot en el chat
