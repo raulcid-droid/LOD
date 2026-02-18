@@ -196,6 +196,7 @@ IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicio
 
             elif component_type == 'product_detail':
                 product_name = ai_response.get('product_name', '')
+                # Buscar primero en product.template (tienda web)
                 domain = [('website_published', '=', True)]
                 if product_name:
                     domain.append(('name', 'ilike', product_name))
@@ -208,6 +209,21 @@ IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicio
                         'category': product.categ_id.name if product.categ_id else '',
                         'image_url': '/web/image/product.template/%d/image_256' % product.id,
                     }
+                else:
+                    # Fallback: buscar en construction.material (inventario)
+                    mat_domain = []
+                    if product_name:
+                        mat_domain.append(('name', 'ilike', product_name))
+                    material = request.env['construction.material'].sudo().search(mat_domain, limit=1)
+                    if material:
+                        category_map = {'hormigon': 'Hormigón', 'fierro': 'Fierro', 'moldaje': 'Moldaje', 'cemento': 'Cemento', 'arena': 'Arena', 'herramientas': 'Herramientas', 'otros': 'Otros'}
+                        state_map = {'available': 'Disponible', 'low': 'Stock bajo', 'out': 'Sin stock'}
+                        result['data'] = {
+                            'name': material.name,
+                            'price': 0,
+                            'description': f"Stock: {material.quantity} {material.unit} — {state_map.get(material.state, '')}",
+                            'category': category_map.get(material.category, material.category or ''),
+                        }
 
             return result
             
