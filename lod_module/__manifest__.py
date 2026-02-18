@@ -12,9 +12,8 @@
     """,
     'author': 'Raul Cid',
     'website': 'https://cidev.dev',
-    'depends': ['base', 'mail', 'stock', 'product'],
+    'depends': ['base', 'mail', 'stock', 'product', 'uom'],
     'data': [
-        'security/ir.model.access.csv',
         'data/uom_data.xml',
         'data/discuss_channel_data.xml',
         'data/demo_materials.xml',
