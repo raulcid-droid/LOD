@@ -279,6 +279,7 @@
             content += '<img class="lod-detail-image" src="' + imgSrc
                 + '" alt="' + escapeHtml(data.name || '') + '"'
                 + ' onerror="this.src=\'' + getCategoryPlaceholder(data.category) + '\'" />';
+            content += '<div class="lod-detail-info">';
             if (data.name) {
                 content += '<div class="lod-detail-name">' + escapeHtml(data.name) + '</div>';
             }
@@ -292,7 +293,7 @@
                 content += '<div class="lod-detail-price">$'
                     + Number(data.price).toLocaleString('es-CL') + '</div>';
             }
-            content += '</div>';
+            content += '</div></div>';
 
             addComponentHTML(content);
         }
