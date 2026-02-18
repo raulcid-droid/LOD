@@ -129,8 +129,11 @@ Reglas para elegir el type:
 - "material_table": cuando pregunten por materiales, inventario, stock, disponibilidad
 - "contact_card": cuando pregunten por contacto, teléfono, email, dirección
 - "product_list": cuando pregunten por productos, servicios, precios, catálogo
-- "product_detail": cuando pregunten por detalles o información de un producto específico
+- "product_detail": cuando pregunten por detalles o información de un producto específico. OBLIGATORIO incluir "product_name" con el nombre del producto mencionado.
 - "text": para todo lo demás (saludos, dudas técnicas, cálculos, etc.)
+
+IMPORTANTE sobre product_detail: Cuando uses type "product_detail", SIEMPRE debes incluir el campo "product_name" con el nombre del producto que el usuario pregunta. Ejemplo:
+{{"type": "product_detail", "text": "Aquí tienes los detalles:", "product_name": "Hormigón H30"}}
 
 IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicional."""
             
