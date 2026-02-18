@@ -9,6 +9,7 @@
                     <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
                 </header>
                 <sheet>
+                    <field name="image" widget="image" class="oe_avatar" options="{'size': [256, 256]}"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="Nombre del material..." required="1"/>

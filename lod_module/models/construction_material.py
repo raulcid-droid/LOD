@@ -10,6 +10,7 @@ class ConstructionMaterial(models.Model):
 
     name = fields.Char('Material', required=True, tracking=True)
     code = fields.Char('Código', tracking=True)
+    image = fields.Image('Imagen', max_width=256, max_height=256)
     
     category = fields.Selection([
         ('hormigon', 'Hormigón'),

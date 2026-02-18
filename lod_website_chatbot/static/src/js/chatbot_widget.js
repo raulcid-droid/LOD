@@ -293,6 +293,7 @@
                 content += '<div class="lod-detail-price">$'
                     + Number(data.price).toLocaleString('es-CL') + '</div>';
             }
+            content += '<button class="lod-detail-btn" onclick="document.getElementById(\'lod-chatbot-input\').value=\'Quiero más información sobre ' + escapeHtml(data.name || '') + '\';document.getElementById(\'lod-chatbot-send\').click();">Consultar</button>';
             content += '</div></div>';
 
             addComponentHTML(content);
