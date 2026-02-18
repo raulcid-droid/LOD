@@ -192,6 +192,8 @@ IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicio
                 result['data'] = [{
                     'name': p.name,
                     'price': p.list_price,
+                    'image_url': '/web/image/product.template/%d/image_128' % p.id if p.image_1920 else '',
+                    'category': p.categ_id.name if p.categ_id else '',
                 } for p in products]
 
             elif component_type == 'product_detail':
@@ -207,7 +209,7 @@ IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicio
                         'price': product.list_price,
                         'description': product.description_sale or '',
                         'category': product.categ_id.name if product.categ_id else '',
-                        'image_url': '/web/image/product.template/%d/image_256' % product.id,
+                        'image_url': '/web/image/product.template/%d/image_256' % product.id if product.image_1920 else '',
                     }
                 else:
                     # Fallback: buscar en construction.material (inventario)

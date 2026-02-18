@@ -372,11 +372,19 @@
 
 .lod-product-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 6px 0;
+    padding: 8px 0;
     border-bottom: 1px solid #eee;
     font-size: 13px;
+    gap: 10px;
+}
+
+.lod-product-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
 }
 
 .lod-product-item:last-child {
