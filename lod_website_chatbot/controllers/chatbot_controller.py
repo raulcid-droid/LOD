@@ -35,16 +35,16 @@ class ChatbotWebController(http.Controller):
             # En esta etapa, el sistema busca datos relevantes en "tiempo real" desde la base de datos de Odoo.
             # Estos datos recuperados formarán el "contexto" que se enviará al modelo.
             
-            # Consultar inventario
-            materials = request.env['construction.material'].sudo().search([]) # Busca todos los materiales
-            
+            # Consultar inventario (materiales de construcción = product.template con categoría)
+            materials = request.env['product.template'].sudo().search([('x_construction_category', '!=', False)])
+
             if not materials:
                 inventory_text = "📦 No hay materiales en inventario.\n"
             else:
                 inventory_text = "📦 MATERIALES DISPONIBLES:\n\n"
                 for mat in materials:
-                    emoji = "✅" if mat.state == 'available' else "⚠️" if mat.state == 'low' else "❌"
-                    inventory_text += f"{emoji} {mat.name}: {mat.quantity} {mat.unit}\n"
+                    emoji = "✅" if mat.x_construction_state == 'available' else "⚠️" if mat.x_construction_state == 'low' else "❌"
+                    inventory_text += f"{emoji} {mat.name}: {mat.qty_available} {mat.uom_id.name}\n"
             
             # Consultar contenido del website
             website_content = ""
@@ -175,10 +175,10 @@ IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicio
             if component_type == 'material_table':
                 result['data'] = [{
                     'name': m.name,
-                    'quantity': m.quantity,
-                    'unit': m.unit,
-                    'state': m.state,
-                    'category': m.category,
+                    'quantity': m.qty_available,
+                    'unit': m.uom_id.name,
+                    'state': m.x_construction_state,
+                    'category': m.x_construction_category,
                 } for m in materials]
 
             elif component_type == 'contact_card':
@@ -201,52 +201,36 @@ IMPORTANTE: Responde SOLO el JSON, sin markdown, sin backticks, sin texto adicio
 
             elif component_type == 'product_detail':
                 product_name = ai_response.get('product_name', '')
-                # Buscar primero en product.template (tienda web)
                 product = None
                 if product_name:
-                    # Búsqueda exacta
+                    # Búsqueda exacta en product.template (incluye materiales de construcción)
                     product = request.env['product.template'].sudo().search(
-                        [('website_published', '=', True), ('name', 'ilike', product_name)], limit=1)
+                        [('name', 'ilike', product_name)], limit=1)
                     # Búsqueda por palabras si no hay match exacto
                     if not product:
                         for word in product_name.split():
                             if len(word) >= 3:
                                 product = request.env['product.template'].sudo().search(
-                                    [('website_published', '=', True), ('name', 'ilike', word)], limit=1)
+                                    [('name', 'ilike', word)], limit=1)
                                 if product:
                                     break
                 if product:
+                    category_map = {'hormigon': 'Hormigón', 'fierro': 'Fierro', 'moldaje': 'Moldaje', 'cemento': 'Cemento', 'arena': 'Arena', 'herramientas': 'Herramientas', 'otros': 'Otros'}
+                    state_map = {'available': 'Disponible', 'low': 'Stock bajo', 'out': 'Sin stock'}
+                    # Si es material de construcción, incluir info de stock
+                    if product.x_construction_category:
+                        description = f"Stock: {product.qty_available} {product.uom_id.name} — {state_map.get(product.x_construction_state, '')}"
+                        category = category_map.get(product.x_construction_category, product.x_construction_category or '')
+                    else:
+                        description = product.description_sale or ''
+                        category = product.categ_id.name if product.categ_id else ''
                     result['data'] = {
                         'name': product.name,
                         'price': product.list_price,
-                        'description': product.description_sale or '',
-                        'category': product.categ_id.name if product.categ_id else '',
+                        'description': description,
+                        'category': category,
                         'image_url': '/web/image/product.template/%d/image_256' % product.id if product.image_1920 else '',
                     }
-                else:
-                    # Fallback: buscar en construction.material (inventario)
-                    material = None
-                    if product_name:
-                        # Búsqueda exacta
-                        material = request.env['construction.material'].sudo().search(
-                            [('name', 'ilike', product_name)], limit=1)
-                        # Búsqueda por palabras si no hay match exacto
-                        if not material:
-                            for word in product_name.split():
-                                if len(word) >= 3:
-                                    material = request.env['construction.material'].sudo().search(
-                                        [('name', 'ilike', word)], limit=1)
-                                    if material:
-                                        break
-                    if material:
-                        category_map = {'hormigon': 'Hormigón', 'fierro': 'Fierro', 'moldaje': 'Moldaje', 'cemento': 'Cemento', 'arena': 'Arena', 'herramientas': 'Herramientas', 'otros': 'Otros'}
-                        state_map = {'available': 'Disponible', 'low': 'Stock bajo', 'out': 'Sin stock'}
-                        result['data'] = {
-                            'name': material.name,
-                            'price': 0,
-                            'description': f"Stock: {material.quantity} {material.unit} — {state_map.get(material.state, '')}",
-                            'category': category_map.get(material.category, material.category or ''),
-                        }
 
             return result
             

@@ -86,7 +86,7 @@ class DiscussChannel(models.Model):
             # CONSULTAR INVENTARIO
             # ==========================================
             
-            materials = self.env['construction.material'].search([])
+            materials = self.env['product.template'].search([('x_construction_category', '!=', False)])
             
             if not materials:
                 inventory_text = "📦 **INVENTARIO VACÍO** - No hay materiales registrados.\n"
@@ -94,14 +94,14 @@ class DiscussChannel(models.Model):
                 inventory_text = "📦 **INVENTARIO ACTUAL:**\n\n"
                 for mat in materials:
                     # Determinar emoji según estado
-                    if mat.state == 'available':
+                    if mat.x_construction_state == 'available':
                         emoji = "✅"
-                    elif mat.state == 'low':
+                    elif mat.x_construction_state == 'low':
                         emoji = "⚠️"
                     else:
                         emoji = "❌"
                     
-                    inventory_text += f"{emoji} **{mat.name}**: {mat.quantity} {mat.unit}\n"
+                    inventory_text += f"{emoji} **{mat.name}**: {mat.qty_available} {mat.uom_id.name}\n"
             
             # ==========================================
             # LLAMAR A GEMINI

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Categoría: Volumen Construcción -->
+        <record id="uom_categ_volume_construction" model="uom.category">
+            <field name="name">Volumen Construcción</field>
+        </record>
+
+        <record id="uom_m3" model="uom.uom">
+            <field name="name">m³</field>
+            <field name="category_id" ref="uom_categ_volume_construction"/>
+            <field name="factor_inv">1.0</field>
+            <field name="uom_type">reference</field>
+        </record>
+
+        <!-- Categoría: Superficie -->
+        <record id="uom_categ_surface" model="uom.category">
+            <field name="name">Superficie</field>
+        </record>
+
+        <record id="uom_m2" model="uom.uom">
+            <field name="name">m²</field>
+            <field name="category_id" ref="uom_categ_surface"/>
+            <field name="factor_inv">1.0</field>
+            <field name="uom_type">reference</field>
+        </record>
+
+        <!-- Saco: misma categoría que Unidad -->
+        <record id="uom_saco" model="uom.uom">
+            <field name="name">Saco</field>
+            <field name="category_id" ref="uom.product_uom_categ_unit"/>
+            <field name="factor_inv">1.0</field>
+            <field name="uom_type">bigger</field>
+        </record>
+
+    </data>
+</odoo>

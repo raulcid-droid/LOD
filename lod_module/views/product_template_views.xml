@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Heredar form de product.template: agregar tab Construcción -->
+    <record id="view_product_template_construction_form" model="ir.ui.view">
+        <field name="name">product.template.construction.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Construcción" name="construction"
+                      invisible="not x_construction_category">
+                    <group>
+                        <group string="Clasificación">
+                            <field name="x_construction_category"/>
+                            <field name="x_construction_supplier"/>
+                        </group>
+                        <group string="Stock Construcción">
+                            <field name="x_minimum_stock"/>
+                            <field name="x_warehouse_location"/>
+                            <field name="x_construction_state" widget="badge"
+                                   decoration-success="x_construction_state == 'available'"
+                                   decoration-warning="x_construction_state == 'low'"
+                                   decoration-danger="x_construction_state == 'out'"/>
+                        </group>
+                    </group>
+                    <group string="Notas">
+                        <field name="x_construction_notes" nolabel="1"
+                               placeholder="Especificaciones técnicas, observaciones..."/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Lista custom filtrada solo materiales de construcción -->
+    <record id="view_construction_material_list" model="ir.ui.view">
+        <field name="name">product.template.construction.list</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <list string="Materiales de Construcción"
+                  decoration-danger="x_construction_state == 'out'"
+                  decoration-warning="x_construction_state == 'low'"
+                  decoration-success="x_construction_state == 'available'">
+                <field name="default_code"/>
+                <field name="name"/>
+                <field name="x_construction_category"/>
+                <field name="qty_available" string="Cantidad"/>
+                <field name="uom_id" string="Unidad"/>
+                <field name="x_minimum_stock"/>
+                <field name="x_construction_state" widget="badge"/>
+                <field name="x_warehouse_location"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action: solo muestra productos con categoría de construcción -->
+    <record id="action_construction_material" model="ir.actions.act_window">
+        <field name="name">Materiales</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('x_construction_category', '!=', False)]</field>
+        <field name="context">{'default_detailed_type': 'product'}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_construction_material_list')})]"/>
+    </record>
+
+    <!-- Menús -->
+    <menuitem id="menu_construction_root" name="Construcción" sequence="10"/>
+    <menuitem id="menu_construction_materials" name="Bodega"
+              parent="menu_construction_root"/>
+    <menuitem id="menu_materials" name="Materiales"
+              parent="menu_construction_materials"
+              action="action_construction_material"/>
+
+</odoo>

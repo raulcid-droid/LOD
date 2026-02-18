@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
-from . import construction_material 
+from . import product_template
 from . import discuss_channel
 from . import res_config_settings
