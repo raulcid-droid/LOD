@@ -5,3 +5,5 @@ MODULOS DE PRUEBA PARA PRACTICA SELLSIDE. INTEGRACION DE IA , EJECUCION DE MODUL
 - Asistente IA integrado a website que asiste a cliente en website y consulta stock disponible de modulo invetario.
 - Asistente que cubica materiales para construccion. 
 ![iScreen Shoter - Google Chrome - 260202142126](https://github.com/user-attachments/assets/8629c808-fe80-4cb9-b5ca-c93d97d778cb)
+A2UI QWEB COMO MOTOR EN BASE A SOFTARE ODOO. 
+![iScreen Shoter - Google Chrome - 260223170000](https://github.com/user-attachments/assets/1da938c4-e6ec-4062-b93e-ec4471e2256a)
